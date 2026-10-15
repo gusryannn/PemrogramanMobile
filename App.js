@@ -12,15 +12,10 @@ import {
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 
-// =====================================================================
-// Implementasi CameraRoll sesuai materi & spesifikasi Modul 1
-// Menghasilkan 10 foto dari galeri / penyimpanan media
-// =====================================================================
 const CameraRoll = {
   getPhotos: async (params = { first: 10, assetType: 'Photos' }) => {
     const total = params.first || 10;
     
-    // Kumpulan 10 foto galeri berkualitas tinggi
     const galleryItems = [
       { id: '1', name: 'Foto_Wisata_01.jpg', uri: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=500&q=80' },
       { id: '2', name: 'Foto_Gunung_02.jpg', uri: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=500&q=80' },
@@ -55,30 +50,19 @@ export default class App extends Component {
     };
   }
 
-  // -------------------------------------------------------------
-  // TUGAS MANDIRI 1:
-  // Buat sebuah button yang menampilkan alert bertuliskan
-  // "Primakara Luar Biasa" menggunakan component Alert.
-  // -------------------------------------------------------------
   handleShowAlert = () => {
     Alert.alert(
       'Informasi',
       'Primakara Luar Biasa',
-      [{ text: 'OK', onPress: () => console.log('Alert ditutup') }],
+      [{ text: 'OK' }],
       { cancelable: true }
     );
   };
 
-  // -------------------------------------------------------------
-  // TUGAS MANDIRI 2:
-  // Tambahkan sebuah button yang menampilkan 10 gambar dari gallery
-  // menggunakan component CameraRoll !
-  // -------------------------------------------------------------
   handleLoadCameraRoll = async () => {
     try {
       this.setState({ loading: true });
 
-      // Memanggil CameraRoll untuk mengambil 10 foto
       const response = await CameraRoll.getPhotos({
         first: 10,
         assetType: 'Photos',
@@ -91,7 +75,7 @@ export default class App extends Component {
 
       Alert.alert(
         'Berhasil',
-        `Berhasil memuat ${response.edges.length} gambar menggunakan CameraRoll!`
+        `Berhasil memuat ${response.edges.length} gambar!`
       );
     } catch (error) {
       this.setState({ loading: false });
@@ -104,16 +88,13 @@ export default class App extends Component {
       <SafeAreaView style={styles.safeArea}>
         <StatusBar style="dark" />
         <View style={styles.container}>
-          {/* Header Modul */}
           <View style={styles.header}>
             <Text style={styles.courseBadge}>MODUL I</Text>
             <Text style={styles.title}>BASIC COMPONENT, LAYOUTING, STYLING</Text>
             <Text style={styles.subtitle}>Tugas Mandiri Pemrograman Mobile</Text>
           </View>
 
-          {/* Area Tombol Tugas Mandiri */}
           <View style={styles.buttonContainer}>
-            {/* Tombol 1: Alert */}
             <TouchableOpacity
               activeOpacity={0.8}
               style={[styles.button, styles.alertButton]}
@@ -122,7 +103,6 @@ export default class App extends Component {
               <Text style={styles.buttonText}>1. Tampilkan Alert Primakara</Text>
             </TouchableOpacity>
 
-            {/* Tombol 2: CameraRoll 10 Gambar */}
             <TouchableOpacity
               activeOpacity={0.8}
               style={[styles.button, styles.cameraRollButton]}
@@ -136,7 +116,6 @@ export default class App extends Component {
             </TouchableOpacity>
           </View>
 
-          {/* Bagian Tampilan Galeri */}
           <View style={styles.galleryContainer}>
             <View style={styles.galleryHeader}>
               <Text style={styles.sectionTitle}>
@@ -189,7 +168,6 @@ export default class App extends Component {
   }
 }
 
-// Styling menggunakan Flexbox & StyleSheet sesuai kaidah Modul 1
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
@@ -248,10 +226,10 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
   },
   alertButton: {
-    backgroundColor: '#2563EB', // Warna Biru
+    backgroundColor: '#2563EB',
   },
   cameraRollButton: {
-    backgroundColor: '#059669', // Warna Hijau
+    backgroundColor: '#059669',
   },
   buttonText: {
     color: '#FFFFFF',
