@@ -3,166 +3,162 @@ import {
   StyleSheet,
   Text,
   View,
+  TextInput,
   TouchableOpacity,
-  Alert,
-  Image,
   ScrollView,
   SafeAreaView,
   Platform,
+  KeyboardAvoidingView,
+  Alert,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 
-const CameraRoll = {
-  getPhotos: async (params = { first: 10, assetType: 'Photos' }) => {
-    const total = params.first || 10;
-    
-    const galleryItems = [
-      { id: '1', name: 'Foto_Wisata_01.jpg', uri: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=500&q=80' },
-      { id: '2', name: 'Foto_Gunung_02.jpg', uri: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=500&q=80' },
-      { id: '3', name: 'Foto_Hutan_03.jpg', uri: 'https://images.unsplash.com/photo-1448375240586-882707db888b?w=500&q=80' },
-      { id: '4', name: 'Foto_Kota_04.jpg', uri: 'https://images.unsplash.com/photo-1477959858617-67f30bc75b82?w=500&q=80' },
-      { id: '5', name: 'Foto_Danau_05.jpg', uri: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=500&q=80' },
-      { id: '6', name: 'Foto_Arsitektur_06.jpg', uri: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=500&q=80' },
-      { id: '7', name: 'Foto_Sunset_07.jpg', uri: 'https://images.unsplash.com/photo-1495616811223-4d98c6e9c869?w=500&q=80' },
-      { id: '8', name: 'Foto_Pantai_08.jpg', uri: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=500&q=80' },
-      { id: '9', name: 'Foto_Bunga_09.jpg', uri: 'https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=500&q=80' },
-      { id: '10', name: 'Foto_Kopi_10.jpg', uri: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=500&q=80' },
-    ];
+class DisplayCard extends Component {
+  render() {
+    if (!this.props.visible) {
+      return null;
+    }
 
-    return {
-      edges: galleryItems.slice(0, total).map((item) => ({
-        node: {
-          id: item.id,
-          image: { uri: item.uri },
-          filename: item.name,
-        },
-      })),
-    };
-  },
-};
+    return (
+      <View style={styles.helloCard}>
+        <Text style={styles.helloText}>{this.props.text}</Text>
+      </View>
+    );
+  }
+}
+
+class ResultCard extends Component {
+  render() {
+    if (!this.props.value) {
+      return (
+        <View style={styles.emptyCard}>
+          <Text style={styles.emptyText}>Belum ada data yang disubmit</Text>
+        </View>
+      );
+    }
+
+    return (
+      <View style={styles.resultCard}>
+        <Text style={styles.resultLabel}>Hasil Input:</Text>
+        <Text style={styles.resultText}>{this.props.value}</Text>
+        {this.props.onClear && (
+          <TouchableOpacity
+            style={styles.clearBtn}
+            onPress={this.props.onClear}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.clearBtnText}>Hapus</Text>
+          </TouchableOpacity>
+        )}
+      </View>
+    );
+  }
+}
 
 export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      photos: [],
-      loading: false,
+      isHelloVisible: false,
+      inputText: '',
+      submittedText: '',
     };
   }
 
-  handleShowAlert = () => {
-    Alert.alert(
-      'Informasi',
-      'Primakara Luar Biasa',
-      [{ text: 'OK' }],
-      { cancelable: true }
-    );
+  toggleHello = () => {
+    this.setState((prevState) => ({
+      isHelloVisible: !prevState.isHelloVisible,
+    }));
   };
 
-  handleLoadCameraRoll = async () => {
-    try {
-      this.setState({ loading: true });
+  handleInputChange = (text) => {
+    this.setState({ inputText: text });
+  };
 
-      const response = await CameraRoll.getPhotos({
-        first: 10,
-        assetType: 'Photos',
-      });
-
-      this.setState({
-        photos: response.edges,
-        loading: false,
-      });
-
-      Alert.alert(
-        'Berhasil',
-        `Berhasil memuat ${response.edges.length} gambar!`
-      );
-    } catch (error) {
-      this.setState({ loading: false });
-      Alert.alert('Gagal', error.message);
+  handleSubmit = () => {
+    if (!this.state.inputText.trim()) {
+      Alert.alert('Peringatan', 'Silakan masukkan teks terlebih dahulu');
+      return;
     }
+
+    this.setState({
+      submittedText: this.state.inputText,
+      inputText: '',
+    });
+  };
+
+  handleClearResult = () => {
+    this.setState({
+      submittedText: '',
+    });
   };
 
   render() {
     return (
       <SafeAreaView style={styles.safeArea}>
         <StatusBar style="dark" />
-        <View style={styles.container}>
-          <View style={styles.header}>
-            <Text style={styles.courseBadge}>MODUL I</Text>
-            <Text style={styles.title}>BASIC COMPONENT, LAYOUTING, STYLING</Text>
-            <Text style={styles.subtitle}>Tugas Mandiri Pemrograman Mobile</Text>
-          </View>
-
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              activeOpacity={0.8}
-              style={[styles.button, styles.alertButton]}
-              onPress={this.handleShowAlert}
-            >
-              <Text style={styles.buttonText}>1. Tampilkan Alert Primakara</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              activeOpacity={0.8}
-              style={[styles.button, styles.cameraRollButton]}
-              onPress={this.handleLoadCameraRoll}
-            >
-              <Text style={styles.buttonText}>
-                {this.state.loading
-                  ? 'Memuat Galeri...'
-                  : '2. Tampilkan 10 Gambar (CameraRoll)'}
-              </Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.galleryContainer}>
-            <View style={styles.galleryHeader}>
-              <Text style={styles.sectionTitle}>
-                Hasil Tampilan Galeri ({this.state.photos.length}/10 Gambar)
-              </Text>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          style={styles.container}
+        >
+          <ScrollView
+            contentContainerStyle={styles.scrollContent}
+            showsVerticalScrollIndicator={false}
+          >
+            <View style={styles.header}>
+              <Text style={styles.badge}>MODUL III</Text>
+              <Text style={styles.title}>Props, State, Method</Text>
+              <Text style={styles.subtitle}>Tugas Mandiri Pemrograman Mobile</Text>
             </View>
 
-            <ScrollView
-              contentContainerStyle={styles.scrollContent}
-              showsVerticalScrollIndicator={false}
-            >
-              {this.state.photos.length === 0 ? (
-                <View style={styles.emptyContainer}>
-                  <Text style={styles.emptyIcon}>🖼️</Text>
-                  <Text style={styles.emptyText}>
-                    Belum ada gambar yang dimuat.
-                  </Text>
-                  <Text style={styles.emptySubtext}>
-                    Tekan tombol "2. Tampilkan 10 Gambar (CameraRoll)" di atas.
-                  </Text>
-                </View>
-              ) : (
-                <View style={styles.gridContainer}>
-                  {this.state.photos.map((item, index) => (
-                    <View key={item.node.id || index} style={styles.card}>
-                      <Image
-                        source={{ uri: item.node.image.uri }}
-                        style={styles.image}
-                        resizeMode="cover"
-                      />
-                      <View style={styles.cardCaption}>
-                        <Text style={styles.captionBadge}>#{index + 1}</Text>
-                        <Text
-                          style={styles.captionText}
-                          numberOfLines={1}
-                          ellipsizeMode="tail"
-                        >
-                          {item.node.filename}
-                        </Text>
-                      </View>
-                    </View>
-                  ))}
-                </View>
-              )}
-            </ScrollView>
-          </View>
-        </View>
+            <View style={styles.cardSection}>
+              <Text style={styles.sectionTitle}>Tugas 1: Toggle Hello World</Text>
+              
+              <TouchableOpacity
+                style={[
+                  styles.btn,
+                  this.state.isHelloVisible ? styles.btnHide : styles.btnShow,
+                ]}
+                onPress={this.toggleHello}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.btnText}>
+                  {this.state.isHelloVisible ? 'Sembunyikan' : 'Tampilkan'}
+                </Text>
+              </TouchableOpacity>
+
+              <DisplayCard
+                visible={this.state.isHelloVisible}
+                text="Hello World"
+              />
+            </View>
+
+            <View style={styles.cardSection}>
+              <Text style={styles.sectionTitle}>Tugas 2: Input & Submit Text</Text>
+
+              <TextInput
+                style={styles.input}
+                placeholder="Ketik teks di sini..."
+                placeholderTextColor="#9CA3AF"
+                value={this.state.inputText}
+                onChangeText={this.handleInputChange}
+              />
+
+              <TouchableOpacity
+                style={[styles.btn, styles.btnSubmit]}
+                onPress={this.handleSubmit}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.btnText}>Submit</Text>
+              </TouchableOpacity>
+
+              <ResultCard
+                value={this.state.submittedText}
+                onClear={this.handleClearResult}
+              />
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     );
   }
@@ -175,148 +171,147 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    paddingHorizontal: 16,
-    paddingTop: Platform.OS === 'android' ? 35 : 10,
+  },
+  scrollContent: {
+    padding: 16,
+    paddingTop: Platform.OS === 'android' ? 35 : 16,
   },
   header: {
-    alignItems: 'center',
-    paddingVertical: 14,
     backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    marginBottom: 14,
-    elevation: 3,
+    borderRadius: 14,
+    padding: 16,
+    alignItems: 'center',
+    marginBottom: 16,
+    elevation: 2,
     shadowColor: '#000',
-    shadowOpacity: 0.08,
+    shadowOpacity: 0.06,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
   },
-  courseBadge: {
+  badge: {
     fontSize: 12,
-    fontWeight: 'bold',
+    fontWeight: '800',
     color: '#0284C7',
-    letterSpacing: 1.5,
+    letterSpacing: 1.2,
     marginBottom: 4,
   },
   title: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#1F2937',
-    textAlign: 'center',
   },
   subtitle: {
     fontSize: 13,
     color: '#6B7280',
     marginTop: 2,
   },
-  buttonContainer: {
-    flexDirection: 'column',
-    gap: 10,
+  cardSection: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 14,
+    padding: 16,
+    marginBottom: 16,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOpacity: 0.06,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+  },
+  sectionTitle: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#374151',
     marginBottom: 14,
   },
-  button: {
+  btn: {
     paddingVertical: 13,
-    paddingHorizontal: 16,
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 3,
   },
-  alertButton: {
+  btnShow: {
     backgroundColor: '#2563EB',
   },
-  cameraRollButton: {
+  btnHide: {
+    backgroundColor: '#DC2626',
+  },
+  btnSubmit: {
     backgroundColor: '#059669',
   },
-  buttonText: {
+  btnText: {
     color: '#FFFFFF',
     fontSize: 15,
     fontWeight: '700',
   },
-  galleryContainer: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 12,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOpacity: 0.05,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-  },
-  galleryHeader: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
-    paddingBottom: 8,
-    marginBottom: 10,
-  },
-  sectionTitle: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#374151',
-  },
-  scrollContent: {
-    flexGrow: 1,
-    paddingBottom: 16,
-  },
-  gridContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-  },
-  card: {
-    width: '48%',
-    backgroundColor: '#F9FAFB',
-    borderRadius: 8,
-    overflow: 'hidden',
+  helloCard: {
+    marginTop: 14,
+    backgroundColor: '#EFF6FF',
+    borderColor: '#BFDBFE',
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderRadius: 10,
+    padding: 16,
+    alignItems: 'center',
+  },
+  helloText: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#1D4ED8',
+  },
+  input: {
+    backgroundColor: '#F9FAFB',
+    borderWidth: 1,
+    borderColor: '#D1D5DB',
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    fontSize: 15,
+    color: '#1F2937',
     marginBottom: 12,
   },
-  image: {
-    width: '100%',
-    height: 110,
-    backgroundColor: '#E5E7EB',
-  },
-  cardCaption: {
-    flexDirection: 'row',
+  emptyCard: {
+    marginTop: 14,
+    padding: 16,
+    backgroundColor: '#F9FAFB',
+    borderRadius: 10,
     alignItems: 'center',
-    padding: 6,
-    gap: 4,
-  },
-  captionBadge: {
-    fontSize: 11,
-    fontWeight: 'bold',
-    color: '#2563EB',
-  },
-  captionText: {
-    fontSize: 11,
-    color: '#4B5563',
-    flex: 1,
-  },
-  emptyContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 45,
-  },
-  emptyIcon: {
-    fontSize: 44,
-    marginBottom: 8,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    borderStyle: 'dashed',
   },
   emptyText: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#4B5563',
-    marginBottom: 4,
-  },
-  emptySubtext: {
-    fontSize: 12,
+    fontSize: 13,
     color: '#9CA3AF',
-    textAlign: 'center',
-    paddingHorizontal: 20,
+  },
+  resultCard: {
+    marginTop: 14,
+    padding: 14,
+    backgroundColor: '#ECFDF5',
+    borderColor: '#A7F3D0',
+    borderWidth: 1,
+    borderRadius: 10,
+  },
+  resultLabel: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#047857',
+    marginBottom: 4,
+    textTransform: 'uppercase',
+  },
+  resultText: {
+    fontSize: 16,
+    color: '#065F46',
+    fontWeight: '600',
+  },
+  clearBtn: {
+    alignSelf: 'flex-end',
+    marginTop: 8,
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    backgroundColor: '#FEE2E2',
+    borderRadius: 6,
+  },
+  clearBtnText: {
+    color: '#DC2626',
+    fontSize: 12,
+    fontWeight: '600',
   },
 });

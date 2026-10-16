@@ -1,51 +1,54 @@
-# Laporan Tugas Praktikum Pemrograman Mobile
-**MODUL I: BASIC COMPONENT, LAYOUTING, STYLING**
+# Laporan Praktikum Pemrograman Mobile
+**MODUL III: Props, State, Method**
 
 ---
 
 ## 1. Jawaban Tugas Pendahuluan
 
-### Pertanyaan 1: Apa itu Flexbox?
+### Pertanyaan 1: Apa perbedaan props dengan state?
 **Jawaban:**
-Flexbox (*Flexible Box Layout*) adalah model pengaturan tata letak antarmuka yang dirancang untuk mendistribusikan ruang dan menyejajarkan (*align*) elemen-elemen di dalam sebuah container secara konsisten di berbagai ukuran layar.
-Pada framework React Native, Flexbox merupakan fondasi utama sistem layouting, dengan beberapa karakteristik:
-- Arah utama (*flexDirection*) default adalah `column` (berbeda dengan CSS di web yang default-nya `row`).
-- Nilai `flex` pada React Native menerima angka tunggal yang merepresentasikan proporsi ruang relatif terhadap elemen saudaranya.
+- **Props (Properties)**: Merupakan parameter konfigurasi yang dikirimkan dari komponen *parent* (induk) ke komponen *child* (anak). Props bersifat *read-only* (tidak dapat diubah oleh komponen penerima).
+- **State**: Merupakan variabel data internal yang dikelola langsung oleh komponen itu sendiri. State bersifat dinamis dan dapat berubah sepanjang siklus hidup komponen melalui pemanggilan `setState` untuk memperbarui tampilan UI (*re-render*).
 
-### Pertanyaan 2: Sebutkan minimal 2 (dua) component library framework React Native!
+### Pertanyaan 2: Bagaimanakah cara merubah state?
 **Jawaban:**
-1. **React Native Paper** – Library komponen UI berbasis pedoman Material Design dari Google yang kaya fitur dan mudah dikustomisasi.
-2. **React Native Elements** – Toolkit UI lintas platform yang menyediakan beragam komponen siap pakai (*Button, Card, Avatar, Input, dll.*).
-3. *(Alternatif)*: **NativeBase** dan **UI Kitten**.
+Pada Class Component, state diubah dengan memanggil fungsi `this.setState()`, misalnya:
+```javascript
+this.setState({ namaState: nilaiBaru });
+```
+Atau menggunakan *updater function* jika perubahan bergantung pada state sebelumnya:
+```javascript
+this.setState((prevState) => ({
+  counter: prevState.counter + 1
+}));
+```
+Mengubah state tidak boleh dilakukan secara langsung melalui mutasi (misalnya `this.state.x = y`), karena React tidak akan mendeteksi perubahan tersebut untuk me-*render* ulang UI.
 
 ---
 
 ## 2. Implementasi Tugas Mandiri
 
-### Tugas 1: Button Alert "Primakara Luar Biasa"
-- Menggunakan komponen `TouchableOpacity` dan fungsi `Alert.alert()`.
-- Saat tombol ditekan, aplikasi memunculkan dialog pop-up bertuliskan **"Primakara Luar Biasa"**.
+### Tugas 1: Toggle Teks "Hello World"
+- Disediakan tombol dengan label dinamis: **"Tampilkan"** / **"Sembunyikan"**.
+- Menggunakan state `isHelloVisible` untuk mengatur visibilitas komponen `DisplayCard` (komponen anak yang menerima teks via **props**).
+- Menggunakan **method** `toggleHello` untuk membalikkan nilai boolean pada state.
 
-### Tugas 2: Button Menampilkan 10 Gambar dari Galeri Menggunakan CameraRoll
-- Menggunakan implementasi modul `CameraRoll` yang meminta izin akses galeri (`PermissionsAndroid` / Media Library).
-- Mengambil **10 gambar pertama** dari galeri perangkat melalui metode `getPhotos({ first: 10, assetType: 'Photos' })`.
-- Menampilkan foto-foto tersebut dalam bentuk **Grid 2 kolom** menggunakan Flexbox (`flexDirection: 'row'`, `flexWrap: 'wrap'`, `justifyContent: 'space-between'`).
+### Tugas 2: Input Text dan Submit
+- Disediakan komponen `TextInput` dan tombol **Submit**.
+- Input dikontrol menggunakan state `inputText` via event `onChangeText`.
+- Ketika tombol Submit ditekan, **method** `handleSubmit` memvalidasi input dan menyimpan nilainya ke state `submittedText`.
+- Komponen `ResultCard` menerima nilai submitted text melalui **props** dan menampilkannya, dilengkapi aksi hapus/reset.
 
 ---
 
-## 3. Cara Menjalankan Aplikasi
+## 3. Cara Menjalankan
 
-1. Buka folder proyek ini di **Visual Studio Code**:
+1. Buka folder ini di terminal atau VS Code:
+   ```bash
+   cd C:\Users\alex_\Documents\PemrogramanMobile\tugas_modul2
    ```
-   C:\Users\alex_\.gemini\antigravity\scratch\tugas_modul1
-   ```
-2. Buka terminal di VS Code, lalu jalankan:
+2. Jalankan aplikasi menggunakan Expo:
    ```bash
    npx expo start
    ```
-3. **Pilihan Menjalankan:**
-   - **Di HP Asli (Paling Cepat & Mudah):**
-     Install aplikasi **Expo Go** dari Google Play Store di HP Android, lalu scan QR Code yang muncul di terminal.
-   - **Di Android Studio Emulator:**
-     Nyalakan emulator Android dari Android Studio (AVD Manager), lalu tekan huruf `a` di terminal.
-
+3. Tekan **`a`** untuk membuka di emulator Android.
