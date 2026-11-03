@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Platform } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { COLORS } from '../data/menuData';
 import { useApp } from '../context/AppContext';
@@ -29,7 +30,11 @@ const Tab = createBottomTabNavigator();
 
 function MainTabNavigator() {
   const { cart } = useApp();
+  const insets = useSafeAreaInsets();
   const totalCartCount = cart.reduce((acc, item) => acc + item.qty, 0);
+
+  const bottomInset = insets.bottom > 0 ? insets.bottom : (Platform.OS === 'ios' ? 24 : 12);
+  const barHeight = 56 + bottomInset;
 
   return (
     <Tab.Navigator
@@ -50,27 +55,33 @@ function MainTabNavigator() {
         tabBarStyle: {
           backgroundColor: '#FFFFFF',
           borderTopColor: COLORS.grayBorder,
-          height: 62,
-          paddingBottom: 8,
-          paddingTop: 6,
+          height: barHeight,
+          paddingBottom: bottomInset,
+          paddingTop: 8,
+          elevation: 8,
+          shadowColor: '#000',
+          shadowOpacity: 0.08,
+          shadowOffset: { width: 0, height: -2 },
+          shadowRadius: 6,
         },
         tabBarLabelStyle: {
           fontSize: 11,
           fontWeight: '700',
+          marginTop: 2,
         },
         tabBarIcon: ({ focused }) => {
           let icon = '🏠';
           let badge = null;
 
-          if (route.name === 'HomeTab') icon = '🏠';
-          else if (route.name === 'MenuTab') icon = '🍵';
-          else if (route.name === 'CartTab') {
+          if (route.name === 'Home') icon = '🏠';
+          else if (route.name === 'Menu') icon = '📋';
+          else if (route.name === 'Cart') {
             icon = '🛒';
             if (totalCartCount > 0) {
               badge = totalCartCount;
             }
-          } else if (route.name === 'OrdersTab') icon = '📦';
-          else if (route.name === 'ProfileTab') icon = '👤';
+          } else if (route.name === 'Orders') icon = '📦';
+          else if (route.name === 'Profile') icon = '👤';
 
           return (
             <View style={styles.iconWrapper}>
@@ -86,27 +97,27 @@ function MainTabNavigator() {
       })}
     >
       <Tab.Screen
-        name="HomeTab"
+        name="Home"
         component={HomeScreen}
         options={{ title: 'Beranda', headerTitle: 'Jungut Fresh Cendol' }}
       />
       <Tab.Screen
-        name="MenuTab"
+        name="Menu"
         component={MenuScreen}
         options={{ title: 'Menu', headerTitle: 'Daftar Menu Cendol' }}
       />
       <Tab.Screen
-        name="CartTab"
+        name="Cart"
         component={CartScreen}
         options={{ title: 'Keranjang', headerTitle: 'Keranjang Pesanan' }}
       />
       <Tab.Screen
-        name="OrdersTab"
+        name="Orders"
         component={OrderHistoryScreen}
         options={{ title: 'Pesanan', headerTitle: 'Riwayat Pesanan' }}
       />
       <Tab.Screen
-        name="ProfileTab"
+        name="Profile"
         component={ProfileScreen}
         options={{ title: 'Profil', headerTitle: 'Profil Saya' }}
       />

@@ -50,12 +50,20 @@ export default function ProductDetailScreen({ route, navigation }) {
     <View style={styles.container}>
       <StatusBar backgroundColor="transparent" translucent barStyle="dark-content" />
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
-        <View style={styles.imageWrapper}>
-          <Image source={{ uri: item.image }} style={styles.image} />
-          <TouchableOpacity style={styles.backBtn} onPress={() => navigation.goBack()}>
-            <Text style={styles.backBtnText}>←</Text>
-          </TouchableOpacity>
-        </View>
+        {item.image ? (
+          <View style={styles.imageWrapper}>
+            <Image source={{ uri: item.image }} style={styles.image} />
+            <TouchableOpacity style={styles.backBtn} onPress={() => navigation.goBack()}>
+              <Text style={styles.backBtnText}>←</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <View style={styles.topBarNoImage}>
+            <TouchableOpacity style={styles.backBtnNoImage} onPress={() => navigation.goBack()}>
+              <Text style={styles.backBtnTextNoImage}>← Kembali</Text>
+            </TouchableOpacity>
+          </View>
+        )}
 
         <View style={styles.body}>
           <View style={styles.badgeRow}>
@@ -145,8 +153,30 @@ export default function ProductDetailScreen({ route, navigation }) {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#FFFFFF' },
   scroll: { paddingBottom: 110 },
+  topBarNoImage: {
+    paddingTop: 50,
+    paddingHorizontal: 16,
+    paddingBottom: 10,
+    backgroundColor: '#FFFFFF',
+  },
+  backBtnNoImage: {
+    paddingVertical: 6,
+    paddingHorizontal: 8,
+    alignSelf: 'flex-start',
+  },
+  backBtnTextNoImage: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: COLORS.primary,
+  },
   imageWrapper: { width: '100%', height: 280, position: 'relative' },
   image: { width: '100%', height: '100%', backgroundColor: '#E5E7EB' },
+  placeholderImage: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#E5E7EB',
+  },
+  placeholderEmoji: { fontSize: 64, opacity: 0.6 },
   backBtn: {
     position: 'absolute',
     top: 45,

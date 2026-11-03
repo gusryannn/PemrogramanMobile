@@ -92,7 +92,9 @@ export default function HomeScreen({ navigation }) {
               onPress={() => navigation.navigate('ProductDetail', { item })}
               activeOpacity={0.9}
             >
-              <Image source={{ uri: item.image }} style={styles.menuCardImage} />
+              {item.image ? (
+                <Image source={{ uri: item.image }} style={styles.menuCardImage} />
+              ) : null}
               <View style={styles.menuCardBody}>
                 <Text style={styles.menuCardName}>{item.name}</Text>
                 <View style={styles.menuCardRatingRow}>
@@ -144,7 +146,7 @@ export default function HomeScreen({ navigation }) {
         </TouchableOpacity>
       </View>
 
-      <View style={{ height: 24 }} />
+      <View style={{ height: 110 }} />
     </ScrollView>
   );
 }
@@ -216,6 +218,12 @@ const styles = StyleSheet.create({
     shadowColor: '#000', shadowOpacity: 0.07, shadowOffset: { width: 0, height: 2 }, shadowRadius: 6,
   },
   menuCardImage: { width: '100%', height: 110, backgroundColor: '#e5e7eb' },
+  placeholderImage: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#e5e7eb',
+  },
+  placeholderEmoji: { fontSize: 32, opacity: 0.6 },
   menuCardBody: { padding: 12 },
   menuCardName: { fontSize: 14, fontWeight: '700', color: COLORS.text, marginBottom: 4 },
   menuCardRatingRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 },

@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
   },
   tabText: { fontSize: 13, fontWeight: '600', color: COLORS.gray },
   tabTextActive: { color: '#FFFFFF' },
-  scroll: { padding: 16, paddingTop: 8, paddingBottom: 20 },
+  scroll: { padding: 16, paddingTop: 8, paddingBottom: 110 },
   orderCard: {
     backgroundColor: '#FFFFFF',
     borderRadius: 14,

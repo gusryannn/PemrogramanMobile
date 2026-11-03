@@ -76,7 +76,7 @@ export default function ProfileScreen({ navigation }) {
 
         <TouchableOpacity
           style={styles.menuItem}
-          onPress={() => navigation.navigate('OrderHistory')}
+          onPress={() => navigation.navigate('Orders')}
         >
           <Text style={styles.itemIcon}>📦</Text>
           <Text style={styles.itemText}>Riwayat & Lacak Pesanan</Text>
@@ -126,7 +126,7 @@ export default function ProfileScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F9FAFB' },
-  scroll: { padding: 16, paddingBottom: 30 },
+  scroll: { padding: 16, paddingBottom: 110 },
   profileHeader: {
     backgroundColor: '#FFFFFF',
     borderRadius: 18,
