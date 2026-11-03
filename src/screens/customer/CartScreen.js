@@ -69,8 +69,10 @@ export default function CartScreen({ navigation }) {
 
         {cart.map((item) => (
           <View key={item.id} style={styles.cartCard}>
-            <Image source={{ uri: item.image }} style={styles.cardImg} />
-            <View style={styles.cardInfo}>
+            {item.image ? (
+              <Image source={{ uri: item.image }} style={styles.cardImg} />
+            ) : null}
+            <View style={[styles.cardInfo, item.image ? { marginLeft: 12 } : null]}>
               <View style={styles.cardTopRow}>
                 <Text style={styles.cardTitle} numberOfLines={1}>{item.name}</Text>
                 <TouchableOpacity onPress={() => removeFromCart(item.id)}>
@@ -200,7 +202,12 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   cardImg: { width: 80, height: 80, borderRadius: 10, backgroundColor: '#E5E7EB' },
-  cardInfo: { flex: 1, marginLeft: 12 },
+  placeholderImg: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  placeholderEmoji: { fontSize: 28, opacity: 0.6 },
+  cardInfo: { flex: 1 },
   cardTopRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
   cardTitle: { fontSize: 15, fontWeight: '700', color: COLORS.text, flex: 1 },
   deleteText: { fontSize: 16, color: COLORS.gray, paddingLeft: 8 },

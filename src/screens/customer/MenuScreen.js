@@ -21,7 +21,7 @@ export default function MenuScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <StatusBar backgroundColor={COLORS.primaryDark} barStyle="light-content" />
+      <StatusBar backgroundColor="#FFFFFF" barStyle="dark-content" />
 
       {/* Search Bar */}
       <View style={styles.searchBar}>
@@ -41,22 +41,24 @@ export default function MenuScreen({ navigation }) {
       </View>
 
       {/* Category Filter */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.categoryRow}
-      >
-        {CATEGORIES.map((cat) => (
-          <TouchableOpacity
-            key={cat}
-            style={[styles.catBtn, activeCategory === cat && styles.catBtnActive]}
-            onPress={() => setActiveCategory(cat)}
-            activeOpacity={0.8}
-          >
-            <Text style={[styles.catText, activeCategory === cat && styles.catTextActive]}>{cat}</Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+      <View style={styles.categoryWrapper}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.categoryRow}
+        >
+          {CATEGORIES.map((cat) => (
+            <TouchableOpacity
+              key={cat}
+              style={[styles.catBtn, activeCategory === cat && styles.catBtnActive]}
+              onPress={() => setActiveCategory(cat)}
+              activeOpacity={0.8}
+            >
+              <Text style={[styles.catText, activeCategory === cat && styles.catTextActive]}>{cat}</Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
 
       {/* Product Grid */}
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.grid}>
@@ -75,11 +77,15 @@ export default function MenuScreen({ navigation }) {
                 onPress={() => navigation.navigate('ProductDetail', { item })}
                 activeOpacity={0.9}
               >
-                <Image source={{ uri: item.image }} style={styles.cardImage} />
-                {item.popular && (
-                  <View style={styles.popularBadge}><Text style={styles.popularText}>Populer</Text></View>
-                )}
+                {item.image ? (
+                  <Image source={{ uri: item.image }} style={styles.cardImage} />
+                ) : null}
                 <View style={styles.cardBody}>
+                  {item.popular && (
+                    <View style={styles.popularBadgeInline}>
+                      <Text style={styles.popularText}>★ Populer</Text>
+                    </View>
+                  )}
                   <Text style={styles.cardName} numberOfLines={1}>{item.name}</Text>
                   <Text style={styles.cardDesc} numberOfLines={2}>{item.desc}</Text>
                   <View style={styles.cardFooter}>
@@ -111,16 +117,29 @@ const styles = StyleSheet.create({
   },
   searchIcon: { fontSize: 16 },
   searchInput: { flex: 1, fontSize: 15, color: COLORS.text },
-  categoryRow: { paddingHorizontal: 16, gap: 8, paddingBottom: 4 },
+  categoryWrapper: {
+    height: 48,
+    marginBottom: 6,
+  },
+  categoryRow: {
+    paddingHorizontal: 16,
+    alignItems: 'center',
+    gap: 8,
+  },
   catBtn: {
-    paddingHorizontal: 18, paddingVertical: 8,
-    borderRadius: 20, backgroundColor: '#fff',
-    borderWidth: 1.5, borderColor: COLORS.grayBorder,
+    height: 38,
+    paddingHorizontal: 18,
+    borderRadius: 19,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderWidth: 1.5,
+    borderColor: COLORS.grayBorder,
   },
   catBtnActive: { backgroundColor: COLORS.primary, borderColor: COLORS.primary },
-  catText: { fontSize: 13, fontWeight: '600', color: COLORS.gray },
+  catText: { fontSize: 13, fontWeight: '700', color: COLORS.gray },
   catTextActive: { color: '#fff' },
-  grid: { padding: 16, paddingTop: 12 },
+  grid: { padding: 16, paddingTop: 10, paddingBottom: 110 },
   resultCount: { fontSize: 13, color: COLORS.gray, marginBottom: 12 },
   emptyState: { alignItems: 'center', paddingVertical: 50 },
   emptyEmoji: { fontSize: 44, marginBottom: 8 },
@@ -132,6 +151,20 @@ const styles = StyleSheet.create({
     shadowColor: '#000', shadowOpacity: 0.07, shadowOffset: { width: 0, height: 2 }, shadowRadius: 6,
   },
   cardImage: { width: '100%', height: 120, backgroundColor: '#e5e7eb' },
+  placeholderImage: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#e5e7eb',
+  },
+  placeholderEmoji: { fontSize: 36, opacity: 0.6 },
+  popularBadgeInline: {
+    alignSelf: 'flex-start',
+    backgroundColor: COLORS.accent,
+    borderRadius: 6,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    marginBottom: 6,
+  },
   popularBadge: {
     position: 'absolute', top: 8, left: 8,
     backgroundColor: COLORS.accent, borderRadius: 8, paddingHorizontal: 8, paddingVertical: 3,

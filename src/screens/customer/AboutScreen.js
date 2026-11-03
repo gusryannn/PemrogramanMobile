@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   View, Text, ScrollView, StyleSheet,
-  Image, StatusBar,
+  StatusBar,
 } from 'react-native';
 import { COLORS } from '../../data/menuData';
 
